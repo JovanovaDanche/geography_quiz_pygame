@@ -5,24 +5,28 @@ import time
 import random
 # the Label class is this module below
 from label import *
+from random import sample, shuffle
 
+from utils.api import get_country_data
 
 pygame.init()
 pygame.mixer.init()
-hit = pygame.mixer.Sound("sounds/hit.wav")
+#hit = pygame.mixer.Sound("../sounds/hit.wav")
 screen = pygame.display.set_mode((600, 400))
 clock = pygame.time.Clock()
 
 buttons = pygame.sprite.Group()
+
+
 class Button(pygame.sprite.Sprite):
     ''' A button treated like a Sprite... and killed too '''
-    
+
     def __init__(self, position, text, size,
-        colors="white on blue",
-        hover_colors="red on green",
-        style="button1",
-        borderc=(255,255,255),
-        command=lambda: print("No command activated for this button")):
+                 colors="white on blue",
+                 hover_colors="red on green",
+                 style="button1",
+                 borderc=(255, 255, 255),
+                 command=lambda: print("No command activated for this button")):
 
         # the hover_colors attribute needs to be fixed
         super().__init__()
@@ -41,11 +45,11 @@ class Button(pygame.sprite.Sprite):
             self.hover_colors = hover_colors
         # styles can be button1 or button2 (more simple this one)
         self.style = style
-        self.borderc = borderc # for the style2
+        self.borderc = borderc  # for the style2
         # font
         self.font = pygame.font.SysFont("Arial", size)
         self.render(self.text)
-        self.x, self.y, self.w , self.h = self.text_render.get_rect()
+        self.x, self.y, self.w, self.h = self.text_render.get_rect()
         self.x, self.y = position
         self.rect = pygame.Rect(self.x, self.y, 500, self.h)
         self.position = position
@@ -75,22 +79,22 @@ class Button(pygame.sprite.Sprite):
         lcolor = (150, 150, 150)
         lcolor2 = (50, 50, 50)
         pygame.draw.line(screen, lcolor, self.position,
-            (self.x + self.w , self.y), 5)
+                         (self.x + self.w, self.y), 5)
         pygame.draw.line(screen, lcolor, (self.x, self.y - 2),
-            (self.x, self.y + self.h), 5)
+                         (self.x, self.y + self.h), 5)
         # horizontal down
         pygame.draw.line(screen, lcolor2, (self.x, self.y + self.h),
-            (self.x + self.w , self.y + self.h), 5)
-        pygame.draw.line(screen, lcolor2, (self.x + self.w , self.y + self.h),
-            [self.x + self.w , self.y], 5)
+                         (self.x + self.w, self.y + self.h), 5)
+        pygame.draw.line(screen, lcolor2, (self.x + self.w, self.y + self.h),
+                         [self.x + self.w, self.y], 5)
         # background of the button
-        pygame.draw.rect(screen, self.bg, self.rect)  
+        pygame.draw.rect(screen, self.bg, self.rect)
 
     def draw_button2(self):
         ''' a linear border '''
         # the width is set to 500 to have the same size not depending on the text size
-        pygame.draw.rect(screen, self.bg, (self.x - 50, self.y, 500 , self.h))
-        pygame.gfxdraw.rectangle(screen, (self.x - 50, self.y, 500 , self.h), self.borderc)
+        pygame.draw.rect(screen, self.bg, (self.x - 50, self.y, 500, self.h))
+        pygame.gfxdraw.rectangle(screen, (self.x - 50, self.y, 500, self.h), self.borderc)
 
     def check_collision(self):
         if self.rect.collidepoint(pygame.mouse.get_pos()):
@@ -100,7 +104,6 @@ class Button(pygame.sprite.Sprite):
         else:
             self.colors = self.original_colors
             # pygame.mouse.set_cursor(*pygame.cursors.arrow)
-
 
     def hover(self):
         ''' checks if the mouse is over the button and changes the color if it is true '''
@@ -115,9 +118,8 @@ class Button(pygame.sprite.Sprite):
                 self.command()
                 self.pressed = 0
 
-            if pygame.mouse.get_pressed() == (0,0,0):
+            if pygame.mouse.get_pressed() == (0, 0, 0):
                 self.pressed = 1
-
 
 
 # ACTION FOR BUTTON CLICK ================
@@ -125,33 +127,60 @@ class Button(pygame.sprite.Sprite):
 def on_click():
     print("Click on one answer")
 
+
 def on_right():
     check_score("right")
+
 
 def on_false():
     ''' if there is no 'right' as arg it means it's false '''
     check_score()
 
+
+def generate_questions_from_api():
+    all_data = get_country_data()
+    questions = []
+
+    # Филтрирај само земји со важечки главни градови
+    valid_data = [c for c in all_data if c["capital"] != "N/A"]
+
+    # Креирај до 10 прашања
+    for country in sample(valid_data, min(10, len(valid_data))):
+        question_text = f"What is {country['country']}'s Capital?"
+        correct_answer = country["capital"]
+
+        # Врати 3 погрешни одговори (други главни градови)
+        wrong_answers = sample([c["capital"] for c in valid_data if c["capital"] != correct_answer], 3)
+
+        # Комбинирај и измешај
+        options = [correct_answer] + wrong_answers
+        shuffle(options)
+
+        # Зачувај го и индексот на точниот одговор
+        correct_index = options.index(correct_answer)
+        questions.append([question_text, options, correct_index])
+    return questions
+
 def check_score(answered="wrong"):
     ''' here we check if the answer is right '''
     global qnum, points
-    
+
     # until there are questions (before last)
-    hit.play() # click sound
+   # hit.play()  # click sound
     if qnum < len(questions):
         print(qnum, len(questions))
         if answered == "right":
-            time.sleep(.1) # to avoid adding more point when pressing too much
+            time.sleep(.1)  # to avoid adding more point when pressing too much
             points += 1
             # Show the score text
-        qnum += 1 # counter for next question in the list
+        qnum += 1  # counter for next question in the list
         score.change_text(str(points))
         # Change the text of the question
-        title.change_text(questions[qnum-1][0], color="cyan")
+        title.change_text(questions[qnum - 1][0], color="cyan")
         # change the question number
         num_question.change_text(str(qnum))
-        show_question(qnum) # delete old buttons and show new
-        
+        show_question(qnum)  # delete old buttons and show new
+
 
     # for the last question...
     elif qnum == len(questions):
@@ -159,77 +188,70 @@ def check_score(answered="wrong"):
         if answered == "right":
             kill()
             time.sleep(.1)
-            points +=1
+            points += 1
         score.change_text("You reached a score of " + str(points))
     time.sleep(.5)
 
 
-
-
-questions = [
-    ["What is Italy's Capital?", ["Rome", "Paris", "Tokyo", "Madrid"]],
-    ["What is France's Capital?", ["Paris", "Rome", "Tokyo", "Madrid"]],
-    ["What is England's Capital?", ["London", "Rome", "Tokyo", "Madrid"]],
-]
-
-
+questions = generate_questions_from_api()
 
 
 def show_question(qnum):
     ''' put your buttons here '''
-
     # Kills the previous buttons/sprites
     kill()
 
-    
     # The 4 position of the buttons
     pos = [100, 150, 200, 250]
     # randomized, so that the right one is not on top
     random.shuffle(pos)
 
+    question_data = questions[qnum - 1]
+    question_text = question_data[0]
+    options = question_data[1]
+    correct_index = question_data[2]
+
     Button((10, 100), "1. ", 36, "red on yellow",
-        hover_colors="blue on orange", style="button2", borderc=(255,255,0),
-        command=None)
+           hover_colors="blue on orange", style="button2", borderc=(255, 255, 0),
+           command=None)
     Button((10, 150), "2. ", 36, "red on yellow",
-        hover_colors="blue on orange", style="button2", borderc=(255,255,0),
-        command=None)
+           hover_colors="blue on orange", style="button2", borderc=(255, 255, 0),
+           command=None)
     Button((10, 200), "3. ", 36, "red on yellow",
-        hover_colors="blue on orange", style="button2", borderc=(255,255,0),
-        command=None)
+           hover_colors="blue on orange", style="button2", borderc=(255, 255, 0),
+           command=None)
     Button((10, 250), "4. ", 36, "red on yellow",
-        hover_colors="blue on orange", style="button2", borderc=(255,255,0),
-        command=None)
+           hover_colors="blue on orange", style="button2", borderc=(255, 255, 0),
+           command=None)
 
-
-    # ============== TEXT: question and answers ====================
-    Button((50, pos[0]), questions[qnum-1][1][0], 36, "red on yellow",
-        hover_colors="blue on orange", style="button2", borderc=(255,255,0),
-        command=on_right)
-    Button((50, pos[1]), questions[qnum-1][1][1], 36, "red on yellow",
-        hover_colors="blue on orange", style="button2", borderc=(255,255,0),
-        command=on_false)
-    Button((50, pos[2]), questions[qnum-1][1][2], 36, "red on yellow",
-        hover_colors="blue on orange", style="button2", borderc=(255,255,0),
-        command=on_false)
-    Button((50, pos[3]), questions[qnum-1][1][3], 36, "red on yellow",
-        hover_colors="blue on orange", style="button2", borderc=(255,255,0),
-        command=on_false)
-
+    # Create buttons for each option
+    for i in range(4):
+        if i == correct_index:
+            Button((50, pos[i]), options[i], 36, "red on yellow",
+                   hover_colors="blue on orange", style="button2", borderc=(255, 255, 0),
+                   command=on_right)
+        else:
+            Button((50, pos[i]), options[i], 36, "red on yellow",
+                   hover_colors="blue on orange", style="button2", borderc=(255, 255, 0),
+                   command=on_false)
 
 def kill():
     for _ in buttons:
         _.kill()
+
 
 qnum = 1
 points = 0
 # ================= SOME LABELS ==========================
 num_question = Label(screen, str(qnum), 0, 0)
 score = Label(screen, "Punteggio", 50, 300)
-title = Label(screen, questions[qnum-1][0], 10, 10, 55, color="cyan")
+title = Label(screen, questions[qnum - 1][0], 10, 10, 55, color="cyan")
 write1 = Label(screen, "PYQUIZ BY GiovanniPython", 50, 350, 20, color="red")
+
 
 def start_again():
     pass
+
 
 def loop():
     global game_on
@@ -238,18 +260,19 @@ def loop():
 
     while True:
         screen.fill(0)
-        for event in pygame.event.get(): # ====== quit / exit
+        for event in pygame.event.get():  # ====== quit / exit
             if (event.type == pygame.QUIT):
                 pygame.quit()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     pygame.quit()
-        buttons.update() #                     update buttons
+        buttons.update()  # update buttons
         buttons.draw(screen)
-        show_labels()        #                 update labels
+        show_labels()  # update labels
         clock.tick(60)
         pygame.display.update()
     pygame.quit()
+
 
 if __name__ == '__main__':
     pygame.init()

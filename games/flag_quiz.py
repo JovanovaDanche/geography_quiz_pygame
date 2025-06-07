@@ -1,32 +1,25 @@
 import pygame
-import pygame.gfxdraw
 import sys
 import time
 import random
 import requests
 from io import BytesIO
-from label import *
+from label import Label
 from random import sample, shuffle
 from utils.api import get_country_data
 
-# Initialize pygame
-pygame.init()
-pygame.mixer.init()
-#hit = pygame.mixer.Sound("../sounds/hit.wav")
-screen = pygame.display.set_mode((800, 600))
-clock = pygame.time.Clock()
-
 buttons = pygame.sprite.Group()
-current_flag_image = None  # NEW: to keep flag visible
+current_flag_image = None
 
 class Button(pygame.sprite.Sprite):
-    def __init__(self, position, text, size,
+    def __init__(self, screen, position, text, size,
                  colors="white on blue",
                  hover_colors="red on green",
                  style="button1",
                  borderc=(255, 255, 255),
                  command=None):
         super().__init__()
+        self.screen = screen
         self.text = text
         self.command = command
         self.colors = colors
@@ -50,21 +43,11 @@ class Button(pygame.sprite.Sprite):
     def update(self):
         self.fg, self.bg = self.colors.split(" on ")
         if self.style == "button1":
-            self.draw_button1()
+            pygame.draw.rect(self.screen, self.bg, self.rect)
         elif self.style == "button2":
-            self.draw_button2()
+            pygame.draw.rect(self.screen, self.bg, (self.x - 50, self.y, 500, self.h))
+            pygame.draw.rect(self.screen, self.borderc, (self.x - 50, self.y, 500, self.h), 2)
         self.hover()
-
-    def draw_button1(self):
-        pygame.draw.line(screen, (150, 150, 150), self.position, (self.x + self.w, self.y), 5)
-        pygame.draw.line(screen, (150, 150, 150), (self.x, self.y - 2), (self.x, self.y + self.h), 5)
-        pygame.draw.line(screen, (50, 50, 50), (self.x, self.y + self.h), (self.x + self.w, self.y + self.h), 5)
-        pygame.draw.line(screen, (50, 50, 50), (self.x + self.w, self.y + self.h), [self.x + self.w, self.y], 5)
-        pygame.draw.rect(screen, self.bg, self.rect)
-
-    def draw_button2(self):
-        pygame.draw.rect(screen, self.bg, (self.x - 50, self.y, 500, self.h))
-        pygame.gfxdraw.rectangle(screen, (self.x - 50, self.y, 500, self.h), self.borderc)
 
     def hover(self):
         if self.rect.collidepoint(pygame.mouse.get_pos()):
@@ -82,21 +65,17 @@ def load_flag_image(url):
         print(f"Error loading flag image: {e}")
         return None
 
-
 def generate_flag_questions():
     all_data = get_country_data()
     questions = []
     valid_data = [c for c in all_data if c.get("flag") and c.get("country")]
 
     for country in sample(valid_data, 10):
-
         question_text = "Whose flag is this?"
         correct_answer = country["country"]
-        wrong_answers = sample([
-            c["country"] for c in valid_data
-            if c["country"] != correct_answer
-        ], 3)
-
+        wrong_answers = sample(
+            [c["country"] for c in valid_data if c["country"] != correct_answer], 3
+        )
         options = [correct_answer] + wrong_answers
         shuffle(options)
 
@@ -110,103 +89,91 @@ def generate_flag_questions():
     return questions
 
 
-def on_right():
-    check_score("right")
+def main_loop(screen, clock):
+    global buttons, current_flag_image
+    buttons.empty()
+    current_flag_image = None
 
+    flag_questions = generate_flag_questions()
+    qnum = 1
+    points = 0
+    score = Label(screen, "Score: 0", 50, 550)
+    title = Label(screen, "Flag Quiz", 50, 30, 40, color="blue")
 
-def on_false():
-    check_score("wrong")
+    def kill_buttons():
+        for btn in buttons:
+            btn.kill()
 
+    def check_score(answered="wrong"):
+        nonlocal qnum, points
+        if answered == "right":
+            points += 1
 
-def show_flag_question(qnum):
-    global current_flag_image
-    kill()
-    question = flag_questions[qnum - 1]
+        if qnum < len(flag_questions):
+            qnum += 1
+            score.change_text(f"Score: {points}")
+            show_flag_question(qnum)
+        else:
+            score.change_text(f"Game Over! Final Score: {points}")
+            pygame.time.delay(2000)
+            return False
+        return True
 
-    # Load and save flag image to draw every frame
-    flag_img = load_flag_image(question["image"])
-    if flag_img:
-        current_flag_image = pygame.transform.scale(flag_img, (300, 200))
-    else:
-        current_flag_image = None
+    def on_right():
+        check_score("right")
 
-    # Display question text
-    title.change_text(f"Question {qnum} of {len(flag_questions)}: {question['question']}", color="blue")
+    def on_false():
+        check_score("wrong")
 
-    # Display answer options
-    y_positions = [350, 400, 450, 500]
+    def show_flag_question(qnum):
+        global current_flag_image
+        kill_buttons()
+        question = flag_questions[qnum - 1]
 
-    for i, option in enumerate(question["options"]):
-        # Number label (not interactive)
-        Label(screen, f"{i + 1}.", 50, y_positions[i], 36, color="yellow").draw()
+        flag_img = load_flag_image(question["image"])
+        if flag_img:
+            current_flag_image = pygame.transform.scale(flag_img, (300, 200))
+        else:
+            current_flag_image = None
 
-        # Actual answer (interactive)
-        is_correct = (i == question["correct"])
-        Button(
-            (100, y_positions[i]),
-            option,
-            36,
-            "red on yellow",
-            hover_colors="blue on orange",
-            style="button2",
-            borderc=(255, 255, 0),
-            command=on_right if is_correct else on_false
-        )
+        title.change_text(f"Question {qnum} of {len(flag_questions)}: {question['question']}", color="blue")
+        y_positions = [350, 400, 450, 500]
+        for i, option in enumerate(question["options"]):
+            Label(screen, f"{i + 1}.", 50, y_positions[i], 36, color="yellow").draw()
+            is_correct = (i == question["correct"])
+            Button(
+                screen,
+                (100, y_positions[i]),
+                option,
+                36,
+                "red on yellow",
+                hover_colors="blue on orange",
+                style="button2",
+                borderc=(255, 255, 0),
+                command=on_right if is_correct else on_false
+            )
 
-
-def check_score(answered="wrong"):
-    global qnum, points
-    #hit.play()
-
-    if answered == "right":
-        points += 1
-
-    if qnum < len(flag_questions):
-        qnum += 1
-        score.change_text(f"Score: {points}")
-        show_flag_question(qnum)
-    else:
-        score.change_text(f"Game Over! Final Score: {points}")
-        time.sleep(2)
-
-
-def kill():
-    for btn in buttons:
-        btn.kill()
-
-
-# Initialize game
-flag_questions = generate_flag_questions()
-qnum = 1
-points = 0
-score = Label(screen, "Score: 0", 50, 550)
-title = Label(screen, "Flag Quiz", 300, 30, 40, color="blue")
-
-
-def main_loop():
     show_flag_question(qnum)
 
-    while True:
-        screen.fill((0, 0, 0))  # Black background
+    running = True
+    while running:
+        screen.fill((0, 0, 0))
 
         if current_flag_image:
             screen.blit(current_flag_image, (250, 100))
         else:
-            error = Label(screen, "Flag image not available", 300, 150, 20, color="red")
-            error.draw()
+            Label(screen, "Flag image not available", 300, 150, 20, color="red").draw()
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    pygame.quit()
-                    sys.exit()
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                return  # Return to main menu
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 for btn in buttons:
                     if btn.rect.collidepoint(event.pos) and btn.command:
-                        btn.command()
+                        running = check_score("right" if btn.command == on_right else "wrong")
 
         title.draw()
         score.draw()
@@ -215,7 +182,3 @@ def main_loop():
 
         pygame.display.flip()
         clock.tick(60)
-
-
-if __name__ == '__main__':
-    main_loop()

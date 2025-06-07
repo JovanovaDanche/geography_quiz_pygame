@@ -1,26 +1,27 @@
 import pygame
-import subprocess
 import sys
+from games.flag_quiz import main_loop as flag_quiz_loop
+from games.capitalCity_quiz import main_loop as capital_quiz_loop
 
 pygame.init()
 
 # Window setup
-WIDTH, HEIGHT = 600, 400
+WIDTH, HEIGHT = 800, 600
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Geography Game Menu")
+clock = pygame.time.Clock()
 
 # Colors
 WHITE = (255, 255, 255)
 GRAY = (200, 200, 200)
-DARK_GRAY = (100, 100, 100)
 BLACK = (0, 0, 0)
 
 # Fonts
 font = pygame.font.SysFont(None, 40)
 
 # Buttons
-button_flag = pygame.Rect(200, 120, 200, 60)
-button_capital = pygame.Rect(200, 220, 200, 60)
+button_flag = pygame.Rect(300, 200, 200, 60)
+button_capital = pygame.Rect(300, 300, 200, 60)
 
 def draw_text(text, font, color, surface, x, y):
     text_obj = font.render(text, True, color)
@@ -30,7 +31,7 @@ def draw_text(text, font, color, surface, x, y):
 def main_menu():
     while True:
         screen.fill(WHITE)
-        draw_text("Choose a Game", font, BLACK, screen, WIDTH // 2, 50)
+        draw_text("Choose a Game", font, BLACK, screen, 400, 100)
 
         pygame.draw.rect(screen, GRAY, button_flag)
         draw_text("Flag Quiz", font, BLACK, screen, button_flag.centerx, button_flag.centery)
@@ -45,11 +46,12 @@ def main_menu():
 
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if button_flag.collidepoint(event.pos):
-                    subprocess.run(["python", "games/flag_quiz.py"])
+                    flag_quiz_loop(screen, clock)
                 elif button_capital.collidepoint(event.pos):
-                    subprocess.run(["python", "games/capitalCity_quiz.py"])
+                    capital_quiz_loop(screen, clock)
 
         pygame.display.flip()
+        clock.tick(60)
 
 if __name__ == "__main__":
     main_menu()

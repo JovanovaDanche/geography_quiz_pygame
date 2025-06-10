@@ -1,4 +1,3 @@
-
 import pygame
 
 
@@ -42,6 +41,23 @@ def show_labels():
 	for _ in labels:
 		_.draw()
 
+def draw_wrapped_text(screen, text, x, y, font, color, max_width):
+    words = text.split(" ")
+    lines = []
+    current_line = ""
+
+    for word in words:
+        test_line = current_line + word + " "
+        if font.size(test_line)[0] <= max_width:
+            current_line = test_line
+        else:
+            lines.append(current_line)
+            current_line = word + " "
+    lines.append(current_line)
+
+    for i, line in enumerate(lines):
+        rendered = font.render(line.strip(), True, color)
+        screen.blit(rendered, (x, y + i * font.get_linesize()))
 
 '''     when you import this module
 text1 = Text(win, "Ciao a tutti", 100, 100) # out of loop
@@ -57,6 +73,7 @@ if __name__ == '__main__':
 	Label(win, "Hello World", 100, 100, 36)
 	second = Label(win, "GiovanniPython", 100, 200, 24, color="yellow")
 	second.change_font("Arial", 40, "yellow")
+	long_text = "This is a very long text label that will be automatically wrapped into multiple lines when it reaches the end of the screen."
 	# LOOP TO MAKE THINGS ON THE SCRREEN
 	loop = 1
 	while loop:
@@ -70,6 +87,8 @@ if __name__ == '__main__':
 					loop = 0
 		# CODE TO SHOW TEXT EVERY FRAME
 		show_labels()
+
+		draw_wrapped_text(win, long_text, 50, 200, fontsize(24), (255, 255, 0), 500)
 		pygame.display.update()
 		clock.tick(60)
 

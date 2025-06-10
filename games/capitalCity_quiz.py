@@ -1,8 +1,7 @@
 import pygame
 import sys
-import time
 import random
-from label import Label
+from label import Label, draw_wrapped_text, fontsize
 from utils.api import get_country_data
 
 buttons = pygame.sprite.Group()
@@ -52,16 +51,28 @@ class Button(pygame.sprite.Sprite):
             self.colors = self.original_colors
 
 
-def generate_capital_questions():
+def generate_capital_questions(level="easy"):
     all_data = get_country_data()
-    questions = []
     valid_data = [c for c in all_data if c.get("capital") and c["capital"] != "N/A"]
 
-    for country in random.sample(valid_data, min(10, len(valid_data))):
+    if level == "easy":
+        regions = ["Europe", "North America"]
+    elif level == "medium":
+        regions = ["Asia", "South America"]
+    elif level == "hard":
+        regions = ["Africa", "Oceania"]
+    else:
+        regions = []
+
+    filtered = [c for c in valid_data if c["region"] in regions]
+
+    questions = []
+    for country in random.sample(filtered, min(10, len(filtered))):
         question_text = f"What is the capital of {country['country']}?"
         correct_answer = country["capital"]
         wrong_answers = random.sample(
-            [c["capital"] for c in valid_data if c["capital"] != correct_answer], 3
+            [c["capital"] for c in valid_data if c["capital"] != correct_answer],
+            3
         )
         options = [correct_answer] + wrong_answers
         random.shuffle(options)
@@ -79,11 +90,16 @@ def main_loop(screen, clock):
     global buttons
     buttons.empty()
 
-    capital_questions = generate_capital_questions()
+    capital_questions = (
+        generate_capital_questions("easy") +
+        generate_capital_questions("medium") +
+        generate_capital_questions("hard")
+    )
+
     qnum = 1
     points = 0
     score = Label(screen, "Score: 0", 50, 550)
-    title = Label(screen, "Capital City Quiz", 50, 30, 40, color="blue")
+    question_text = ""  # New variable to hold the current question text
 
     def kill_buttons():
         for btn in buttons:
@@ -105,15 +121,24 @@ def main_loop(screen, clock):
         return True
 
     def on_right():
-        check_score("right")
+        return check_score("right")
 
     def on_false():
-        check_score("wrong")
+        return check_score("wrong")
 
     def show_question(qnum):
+        nonlocal question_text
         kill_buttons()
         question = capital_questions[qnum - 1]
-        title.change_text(f"Question {qnum} of {len(capital_questions)}: {question['question']}", color="blue")
+
+        if qnum <= 10:
+            level_label = "Easy"
+        elif qnum <= 20:
+            level_label = "Medium"
+        else:
+            level_label = "Hard"
+
+        question_text = f"[{level_label}] Question {qnum} of {len(capital_questions)}: {question['question']}"
 
         y_positions = [350, 400, 450, 500]
         for i, option in enumerate(question["options"]):
@@ -146,9 +171,10 @@ def main_loop(screen, clock):
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 for btn in buttons:
                     if btn.rect.collidepoint(event.pos) and btn.command:
-                        running = check_score("right" if btn.command == on_right else "wrong")
+                        running = btn.command()
 
-        title.draw()
+        # Redraw the current question text every frame
+        draw_wrapped_text(screen, question_text, 50, 30, fontsize(28), (0, 0, 255), 700)
         score.draw()
         buttons.update()
         buttons.draw(screen)

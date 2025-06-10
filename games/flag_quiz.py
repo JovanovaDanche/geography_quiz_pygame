@@ -65,16 +65,28 @@ def load_flag_image(url):
         print(f"Error loading flag image: {e}")
         return None
 
-def generate_flag_questions():
+def generate_flag_questions(level="easy"):
     all_data = get_country_data()
-    questions = []
-    valid_data = [c for c in all_data if c.get("flag") and c.get("country")]
+    valid_data = [c for c in all_data if c.get("flag") and c.get("country") and c.get("region")]
 
-    for country in sample(valid_data, 10):
+    if level == "easy":
+        regions = ["Europe", "North America"]
+    elif level == "medium":
+        regions = ["Asia", "South America"]
+    elif level == "hard":
+        regions = ["Africa", "Oceania"]
+    else:
+        regions = []
+
+    filtered = [c for c in valid_data if c["region"] in regions]
+
+    questions = []
+    for country in sample(filtered, min(10, len(filtered))):
         question_text = "Whose flag is this?"
         correct_answer = country["country"]
         wrong_answers = sample(
-            [c["country"] for c in valid_data if c["country"] != correct_answer], 3
+            [c["country"] for c in filtered if c["country"] != correct_answer],
+            min(3, len(filtered) - 1)
         )
         options = [correct_answer] + wrong_answers
         shuffle(options)
@@ -87,14 +99,17 @@ def generate_flag_questions():
         })
 
     return questions
-
-
 def main_loop(screen, clock):
     global buttons, current_flag_image
     buttons.empty()
     current_flag_image = None
 
-    flag_questions = generate_flag_questions()
+    flag_questions = (
+            generate_flag_questions("easy") +
+            generate_flag_questions("medium") +
+            generate_flag_questions("hard")
+    )
+
     qnum = 1
     points = 0
     score = Label(screen, "Score: 0", 50, 550)
@@ -130,13 +145,22 @@ def main_loop(screen, clock):
         kill_buttons()
         question = flag_questions[qnum - 1]
 
+        if qnum <= 10:
+            level_label = "Easy"
+        elif qnum <= 20:
+            level_label = "Medium"
+        else:
+            level_label = "Hard"
+
         flag_img = load_flag_image(question["image"])
         if flag_img:
             current_flag_image = pygame.transform.scale(flag_img, (300, 200))
         else:
             current_flag_image = None
 
-        title.change_text(f"Question {qnum} of {len(flag_questions)}: {question['question']}", color="blue")
+        title.change_text(f"[{level_label}] Question {qnum} of {len(flag_questions)}: {question['question']}",
+                          color="blue")
+
         y_positions = [350, 400, 450, 500]
         for i, option in enumerate(question["options"]):
             Label(screen, f"{i + 1}.", 50, y_positions[i], 36, color="yellow").draw()

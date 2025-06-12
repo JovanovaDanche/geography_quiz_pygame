@@ -11,6 +11,7 @@ from utils.api import get_country_data
 buttons = pygame.sprite.Group()
 current_flag_image = None
 
+
 class Button(pygame.sprite.Sprite):
     def __init__(self, screen, position, text, size,
                  colors="white on blue",
@@ -65,6 +66,7 @@ def load_flag_image(url):
         print(f"Error loading flag image: {e}")
         return None
 
+
 def generate_flag_questions(level="easy"):
     all_data = get_country_data()
     valid_data = [c for c in all_data if c.get("flag") and c.get("country") and c.get("region")]
@@ -99,10 +101,29 @@ def generate_flag_questions(level="easy"):
         })
 
     return questions
+
+
+def show_end_screen(screen, score, total):
+    screen.fill((0, 0, 0))
+    # if score >= total * 0.7:
+    #     message = "You Won!"
+    #     color = "green"
+    # else:
+    #     message = "You Lost!"
+    #     color = "red"
+
+    # Label(screen, message, 300, 200, 50, color=color).draw()
+    Label(screen, f"Final Score: {score} / {total}", 300, 280, 40, color="white").draw()
+    pygame.display.flip()
+    pygame.time.delay(3000)
+
+
 def main_loop(screen, clock):
     global buttons, current_flag_image
     buttons.empty()
     current_flag_image = None
+    TOTAL_TIME = 60
+    start_ticks = pygame.time.get_ticks()
 
     flag_questions = (
             generate_flag_questions("easy") +
@@ -123,15 +144,15 @@ def main_loop(screen, clock):
         nonlocal qnum, points
         if answered == "right":
             points += 1
-
         if qnum < len(flag_questions):
             qnum += 1
             score.change_text(f"Score: {points}")
             show_flag_question(qnum)
         else:
-            score.change_text(f"Game Over! Final Score: {points}")
-            pygame.time.delay(2000)
+            running = False
+            show_end_screen(screen, points, len(flag_questions))
             return False
+
         return True
 
     def on_right():
@@ -201,8 +222,18 @@ def main_loop(screen, clock):
 
         title.draw()
         score.draw()
+
+        elapsed_time = (pygame.time.get_ticks() - start_ticks) // 1000
+        remaining_time = max(0, TOTAL_TIME - elapsed_time)
+
+        Label(screen, f"Time Left: {remaining_time}s", 500, 550, 30, color="white").draw()
+
         buttons.update()
         buttons.draw(screen)
 
+        if remaining_time <= 0:
+            running = False
+            show_end_screen(screen, points, len(flag_questions))
+            return
         pygame.display.flip()
         clock.tick(60)

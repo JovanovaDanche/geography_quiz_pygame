@@ -1,0 +1,1502 @@
+{
+  "Togo": {
+    "coords": [
+      402,
+      273
+    ]
+  },
+  "Mayotte": {
+    "coords": [
+      500,
+      342
+    ]
+  },
+  "Georgia": {
+    "coords": [
+      496,
+      160
+    ]
+  },
+  "Vanuatu": {
+    "coords": [
+      771,
+      353
+    ]
+  },
+  "Kyrgyzstan": {
+    "coords": [
+      566,
+      163
+    ]
+  },
+  "Niger": {
+    "coords": [
+      417,
+      246
+    ]
+  },
+  "China": {
+    "coords": [
+      633,
+      183
+    ]
+  },
+  "Tuvalu": {
+    "coords": [
+      795,
+      326
+    ]
+  },
+  "Comoros": {
+    "coords": [
+      498,
+      340
+    ]
+  },
+  "Bosnia and Herzegovina": {
+    "coords": [
+      440,
+      153
+    ]
+  },
+  "Bahrain": {
+    "coords": [
+      512,
+      213
+    ]
+  },
+  "Somalia": {
+    "coords": [
+      508,
+      266
+    ]
+  },
+  "Saint Barth\u00e9lemy": {
+    "coords": [
+      259,
+      238
+    ]
+  },
+  "Latvia": {
+    "coords": [
+      455,
+      110
+    ]
+  },
+  "Cayman Islands": {
+    "coords": [
+      219,
+      235
+    ]
+  },
+  "Netherlands": {
+    "coords": [
+      412,
+      125
+    ]
+  },
+  "Lesotho": {
+    "coords": [
+      463,
+      398
+    ]
+  },
+  "Venezuela": {
+    "coords": [
+      253,
+      273
+    ]
+  },
+  "Kenya": {
+    "coords": [
+      484,
+      296
+    ]
+  },
+  "Turkey": {
+    "coords": [
+      477,
+      170
+    ]
+  },
+  "Fiji": {
+    "coords": [
+      795,
+      359
+    ]
+  },
+  "Trinidad and Tobago": {
+    "coords": [
+      263,
+      264
+    ]
+  },
+  "Honduras": {
+    "coords": [
+      207,
+      250
+    ]
+  },
+  "Jersey": {
+    "coords": [
+      395,
+      135
+    ]
+  },
+  "Djibouti": {
+    "coords": [
+      495,
+      261
+    ]
+  },
+  "R\u00e9union": {
+    "coords": [
+      523,
+      370
+    ]
+  },
+  "Eswatini": {
+    "coords": [
+      470,
+      388
+    ]
+  },
+  "Tajikistan": {
+    "coords": [
+      557,
+      170
+    ]
+  },
+  "Saudi Arabia": {
+    "coords": [
+      500,
+      216
+    ]
+  },
+  "Bermuda": {
+    "coords": [
+      256,
+      192
+    ]
+  },
+  "New Zealand": {
+    "coords": [
+      786,
+      436
+    ]
+  },
+  "Belarus": {
+    "coords": [
+      462,
+      123
+    ]
+  },
+  "Christmas Island": {
+    "coords": [
+      634,
+      335
+    ]
+  },
+  "Gambia": {
+    "coords": [
+      363,
+      255
+    ]
+  },
+  "French Polynesia": {
+    "coords": [
+      67,
+      358
+    ]
+  },
+  "DR Congo": {
+    "coords": [
+      455,
+      300
+    ]
+  },
+  "Costa Rica": {
+    "coords": [
+      213,
+      266
+    ]
+  },
+  "Malawi": {
+    "coords": [
+      475,
+      345
+    ]
+  },
+  "Republic of the Congo": {
+    "coords": [
+      433,
+      303
+    ]
+  },
+  "Oman": {
+    "coords": [
+      526,
+      230
+    ]
+  },
+  "Iraq": {
+    "coords": [
+      497,
+      190
+    ]
+  },
+  "Niue": {
+    "coords": [
+      22,
+      363
+    ]
+  },
+  "Senegal": {
+    "coords": [
+      368,
+      253
+    ]
+  },
+  "Lebanon": {
+    "coords": [
+      479,
+      187
+    ]
+  },
+  "Angola": {
+    "coords": [
+      441,
+      341
+    ]
+  },
+  "Iran": {
+    "coords": [
+      517,
+      193
+    ]
+  },
+  "Ecuador": {
+    "coords": [
+      227,
+      306
+    ]
+  },
+  "Laos": {
+    "coords": [
+      633,
+      240
+    ]
+  },
+  "Sri Lanka": {
+    "coords": [
+      580,
+      276
+    ]
+  },
+  "Aruba": {
+    "coords": [
+      244,
+      258
+    ]
+  },
+  "S\u00e3o Tom\u00e9 and Pr\u00edncipe": {
+    "coords": [
+      415,
+      296
+    ]
+  },
+  "Grenada": {
+    "coords": [
+      262,
+      259
+    ]
+  },
+  "Montserrat": {
+    "coords": [
+      261,
+      244
+    ]
+  },
+  "Western Sahara": {
+    "coords": [
+      371,
+      218
+    ]
+  },
+  "Guinea": {
+    "coords": [
+      377,
+      263
+    ]
+  },
+  "British Virgin Islands": {
+    "coords": [
+      256,
+      238
+    ]
+  },
+  "Panama": {
+    "coords": [
+      222,
+      270
+    ]
+  },
+  "Yemen": {
+    "coords": [
+      506,
+      250
+    ]
+  },
+  "Estonia": {
+    "coords": [
+      457,
+      103
+    ]
+  },
+  "Guyana": {
+    "coords": [
+      268,
+      283
+    ]
+  },
+  "Luxembourg": {
+    "coords": [
+      413,
+      134
+    ]
+  },
+  "Namibia": {
+    "coords": [
+      437,
+      373
+    ]
+  },
+  "Kosovo": {
+    "coords": [
+      447,
+      157
+    ]
+  },
+  "New Caledonia": {
+    "coords": [
+      767,
+      371
+    ]
+  },
+  "Saint Pierre and Miquelon": {
+    "coords": [
+      274,
+      143
+    ]
+  },
+  "Libya": {
+    "coords": [
+      437,
+      216
+    ]
+  },
+  "Myanmar": {
+    "coords": [
+      617,
+      226
+    ]
+  },
+  "Israel": {
+    "coords": [
+      478,
+      195
+    ]
+  },
+  "Mali": {
+    "coords": [
+      391,
+      243
+    ]
+  },
+  "Argentina": {
+    "coords": [
+      257,
+      413
+    ]
+  },
+  "French Guiana": {
+    "coords": [
+      282,
+      286
+    ]
+  },
+  "Uganda": {
+    "coords": [
+      471,
+      296
+    ]
+  },
+  "Malaysia": {
+    "coords": [
+      650,
+      291
+    ]
+  },
+  "Zambia": {
+    "coords": [
+      466,
+      350
+    ]
+  },
+  "Micronesia": {
+    "coords": [
+      751,
+      276
+    ]
+  },
+  "Slovakia": {
+    "coords": [
+      443,
+      137
+    ]
+  },
+  "Burundi": {
+    "coords": [
+      466,
+      311
+    ]
+  },
+  "Serbia": {
+    "coords": [
+      446,
+      153
+    ]
+  },
+  "Turkmenistan": {
+    "coords": [
+      533,
+      166
+    ]
+  },
+  "South Africa": {
+    "coords": [
+      453,
+      396
+    ]
+  },
+  "Kazakhstan": {
+    "coords": [
+      548,
+      139
+    ]
+  },
+  "Canada": {
+    "coords": [
+      188,
+      100
+    ]
+  },
+  "Poland": {
+    "coords": [
+      444,
+      126
+    ]
+  },
+  "Puerto Rico": {
+    "coords": [
+      252,
+      239
+    ]
+  },
+  "Cocos (Keeling) Islands": {
+    "coords": [
+      615,
+      340
+    ]
+  },
+  "San Marino": {
+    "coords": [
+      427,
+      154
+    ]
+  },
+  "American Samoa": {
+    "coords": [
+      22,
+      347
+    ]
+  },
+  "Qatar": {
+    "coords": [
+      513,
+      215
+    ]
+  },
+  "Gibraltar": {
+    "coords": [
+      388,
+      179
+    ]
+  },
+  "Croatia": {
+    "coords": [
+      434,
+      149
+    ]
+  },
+  "Svalbard and Jan Mayen": {
+    "coords": [
+      444,
+      40
+    ]
+  },
+  "Isle of Man": {
+    "coords": [
+      390,
+      119
+    ]
+  },
+  "Palestine": {
+    "coords": [
+      478,
+      193
+    ]
+  },
+  "Mauritius": {
+    "coords": [
+      527,
+      367
+    ]
+  },
+  "Saint Martin": {
+    "coords": [
+      259,
+      239
+    ]
+  },
+  "Sierra Leone": {
+    "coords": [
+      374,
+      271
+    ]
+  },
+  "Saint Kitts and Nevis": {
+    "coords": [
+      260,
+      242
+    ]
+  },
+  "Iceland": {
+    "coords": [
+      360,
+      83
+    ]
+  },
+  "Heard Island and McDonald Islands": {
+    "coords": [
+      563,
+      476
+    ]
+  },
+  "Kuwait": {
+    "coords": [
+      501,
+      201
+    ]
+  },
+  "Taiwan": {
+    "coords": [
+      668,
+      221
+    ]
+  },
+  "Cameroon": {
+    "coords": [
+      426,
+      280
+    ]
+  },
+  "El Salvador": {
+    "coords": [
+      202,
+      253
+    ]
+  },
+  "Macau": {
+    "coords": [
+      652,
+      226
+    ]
+  },
+  "Cuba": {
+    "coords": [
+      222,
+      228
+    ]
+  },
+  "Brazil": {
+    "coords": [
+      277,
+      333
+    ]
+  },
+  "Solomon Islands": {
+    "coords": [
+      753,
+      326
+    ]
+  },
+  "Greece": {
+    "coords": [
+      448,
+      170
+    ]
+  },
+  "Norway": {
+    "coords": [
+      422,
+      93
+    ]
+  },
+  "Jamaica": {
+    "coords": [
+      227,
+      239
+    ]
+  },
+  "Tanzania": {
+    "coords": [
+      477,
+      320
+    ]
+  },
+  "Bolivia": {
+    "coords": [
+      255,
+      356
+    ]
+  },
+  "Cyprus": {
+    "coords": [
+      473,
+      183
+    ]
+  },
+  "Mongolia": {
+    "coords": [
+      633,
+      146
+    ]
+  },
+  "Monaco": {
+    "coords": [
+      416,
+      154
+    ]
+  },
+  "Tunisia": {
+    "coords": [
+      420,
+      186
+    ]
+  },
+  "French Southern and Antarctic Lands": {
+    "coords": [
+      553,
+      464
+    ]
+  },
+  "Syria": {
+    "coords": [
+      484,
+      183
+    ]
+  },
+  "Chile": {
+    "coords": [
+      242,
+      400
+    ]
+  },
+  "Azerbaijan": {
+    "coords": [
+      505,
+      165
+    ]
+  },
+  "France": {
+    "coords": [
+      404,
+      146
+    ]
+  },
+  "South Korea": {
+    "coords": [
+      683,
+      176
+    ]
+  },
+  "Ghana": {
+    "coords": [
+      395,
+      273
+    ]
+  },
+  "Denmark": {
+    "coords": [
+      422,
+      113
+    ]
+  },
+  "Sint Maarten": {
+    "coords": [
+      259,
+      239
+    ]
+  },
+  "Andorra": {
+    "coords": [
+      403,
+      158
+    ]
+  },
+  "Cura\u00e7ao": {
+    "coords": [
+      246,
+      259
+    ]
+  },
+  "Switzerland": {
+    "coords": [
+      417,
+      143
+    ]
+  },
+  "North Macedonia": {
+    "coords": [
+      448,
+      160
+    ]
+  },
+  "South Sudan": {
+    "coords": [
+      466,
+      276
+    ]
+  },
+  "Haiti": {
+    "coords": [
+      239,
+      236
+    ]
+  },
+  "Peru": {
+    "coords": [
+      231,
+      333
+    ]
+  },
+  "Guinea-Bissau": {
+    "coords": [
+      366,
+      260
+    ]
+  },
+  "Czechia": {
+    "coords": [
+      434,
+      134
+    ]
+  },
+  "Portugal": {
+    "coords": [
+      382,
+      168
+    ]
+  },
+  "Gabon": {
+    "coords": [
+      426,
+      303
+    ]
+  },
+  "Mexico": {
+    "coords": [
+      173,
+      223
+    ]
+  },
+  "Italy": {
+    "coords": [
+      428,
+      157
+    ]
+  },
+  "Finland": {
+    "coords": [
+      457,
+      86
+    ]
+  },
+  "Zimbabwe": {
+    "coords": [
+      466,
+      366
+    ]
+  },
+  "Spain": {
+    "coords": [
+      391,
+      166
+    ]
+  },
+  "Japan": {
+    "coords": [
+      706,
+      180
+    ]
+  },
+  "Seychelles": {
+    "coords": [
+      523,
+      315
+    ]
+  },
+  "Albania": {
+    "coords": [
+      444,
+      163
+    ]
+  },
+  "Moldova": {
+    "coords": [
+      464,
+      143
+    ]
+  },
+  "Guatemala": {
+    "coords": [
+      199,
+      248
+    ]
+  },
+  "Germany": {
+    "coords": [
+      420,
+      130
+    ]
+  },
+  "Guadeloupe": {
+    "coords": [
+      263,
+      245
+    ]
+  },
+  "Bulgaria": {
+    "coords": [
+      455,
+      156
+    ]
+  },
+  "Paraguay": {
+    "coords": [
+      271,
+      376
+    ]
+  },
+  "Eritrea": {
+    "coords": [
+      486,
+      250
+    ]
+  },
+  "Sudan": {
+    "coords": [
+      466,
+      250
+    ]
+  },
+  "Equatorial Guinea": {
+    "coords": [
+      422,
+      293
+    ]
+  },
+  "Colombia": {
+    "coords": [
+      240,
+      286
+    ]
+  },
+  "Nigeria": {
+    "coords": [
+      417,
+      266
+    ]
+  },
+  "Montenegro": {
+    "coords": [
+      442,
+      158
+    ]
+  },
+  "Nepal": {
+    "coords": [
+      586,
+      206
+    ]
+  },
+  "Brunei": {
+    "coords": [
+      654,
+      285
+    ]
+  },
+  "Austria": {
+    "coords": [
+      429,
+      142
+    ]
+  },
+  "Turks and Caicos Islands": {
+    "coords": [
+      240,
+      227
+    ]
+  },
+  "Bahamas": {
+    "coords": [
+      228,
+      216
+    ]
+  },
+  "United Kingdom": {
+    "coords": [
+      395,
+      120
+    ]
+  },
+  "British Indian Ocean Territory": {
+    "coords": [
+      558,
+      320
+    ]
+  },
+  "Liberia": {
+    "coords": [
+      378,
+      278
+    ]
+  },
+  "Anguilla": {
+    "coords": [
+      259,
+      239
+    ]
+  },
+  "Central African Republic": {
+    "coords": [
+      446,
+      276
+    ]
+  },
+  "Algeria": {
+    "coords": [
+      406,
+      206
+    ]
+  },
+  "Saint Lucia": {
+    "coords": [
+      264,
+      253
+    ]
+  },
+  "Romania": {
+    "coords": [
+      455,
+      146
+    ]
+  },
+  "United Arab Emirates": {
+    "coords": [
+      520,
+      220
+    ]
+  },
+  "Morocco": {
+    "coords": [
+      388,
+      193
+    ]
+  },
+  "Northern Mariana Islands": {
+    "coords": [
+      723,
+      249
+    ]
+  },
+  "United States Minor Outlying Islands": {
+    "coords": [
+      770,
+      235
+    ]
+  },
+  "Botswana": {
+    "coords": [
+      453,
+      373
+    ]
+  },
+  "Lithuania": {
+    "coords": [
+      453,
+      113
+    ]
+  },
+  "Caribbean Netherlands": {
+    "coords": [
+      248,
+      259
+    ]
+  },
+  "Cape Verde": {
+    "coords": [
+      348,
+      244
+    ]
+  },
+  "United States": {
+    "coords": [
+      184,
+      173
+    ]
+  },
+  "Australia": {
+    "coords": [
+      695,
+      390
+    ]
+  },
+  "Guam": {
+    "coords": [
+      721,
+      255
+    ]
+  },
+  "Tonga": {
+    "coords": [
+      11,
+      366
+    ]
+  },
+  "Afghanistan": {
+    "coords": [
+      544,
+      190
+    ]
+  },
+  "Falkland Islands": {
+    "coords": [
+      268,
+      472
+    ]
+  },
+  "Nauru": {
+    "coords": [
+      770,
+      301
+    ]
+  },
+  "Cook Islands": {
+    "coords": [
+      44,
+      370
+    ]
+  },
+  "Hungary": {
+    "coords": [
+      444,
+      143
+    ]
+  },
+  "Mauritania": {
+    "coords": [
+      373,
+      233
+    ]
+  },
+  "Slovenia": {
+    "coords": [
+      432,
+      146
+    ]
+  },
+  "Chad": {
+    "coords": [
+      442,
+      250
+    ]
+  },
+  "Vatican City": {
+    "coords": [
+      427,
+      160
+    ]
+  },
+  "Benin": {
+    "coords": [
+      405,
+      268
+    ]
+  },
+  "Singapore": {
+    "coords": [
+      630,
+      295
+    ]
+  },
+  "Malta": {
+    "coords": [
+      431,
+      180
+    ]
+  },
+  "Saint Vincent and the Grenadines": {
+    "coords": [
+      264,
+      255
+    ]
+  },
+  "Marshall Islands": {
+    "coords": [
+      773,
+      270
+    ]
+  },
+  "Thailand": {
+    "coords": [
+      622,
+      250
+    ]
+  },
+  "Liechtenstein": {
+    "coords": [
+      421,
+      142
+    ]
+  },
+  "Ireland": {
+    "coords": [
+      382,
+      123
+    ]
+  },
+  "Maldives": {
+    "coords": [
+      562,
+      289
+    ]
+  },
+  "Vietnam": {
+    "coords": [
+      639,
+      246
+    ]
+  },
+  "Armenia": {
+    "coords": [
+      500,
+      166
+    ]
+  },
+  "Pakistan": {
+    "coords": [
+      555,
+      200
+    ]
+  },
+  "Ivory Coast": {
+    "coords": [
+      388,
+      273
+    ]
+  },
+  "Russia": {
+    "coords": [
+      622,
+      100
+    ]
+  },
+  "Martinique": {
+    "coords": [
+      264,
+      251
+    ]
+  },
+  "Bouvet Island": {
+    "coords": [
+      407,
+      118
+    ]
+  },
+  "Timor-Leste": {
+    "coords": [
+      679,
+      329
+    ]
+  },
+  "Nicaragua": {
+    "coords": [
+      211,
+      256
+    ]
+  },
+  "Papua New Guinea": {
+    "coords": [
+      726,
+      320
+    ]
+  },
+  "Egypt": {
+    "coords": [
+      466,
+      210
+    ]
+  },
+  "Jordan": {
+    "coords": [
+      480,
+      196
+    ]
+  },
+  "Uruguay": {
+    "coords": [
+      275,
+      410
+    ]
+  },
+  "Burkina Faso": {
+    "coords": [
+      395,
+      256
+    ]
+  },
+  "Cambodia": {
+    "coords": [
+      633,
+      256
+    ]
+  },
+  "Ethiopia": {
+    "coords": [
+      484,
+      273
+    ]
+  },
+  "Kiribati": {
+    "coords": [
+      784,
+      295
+    ]
+  },
+  "Bhutan": {
+    "coords": [
+      601,
+      208
+    ]
+  },
+  "Dominican Republic": {
+    "coords": [
+      242,
+      236
+    ]
+  },
+  "Suriname": {
+    "coords": [
+      275,
+      286
+    ]
+  },
+  "Bangladesh": {
+    "coords": [
+      600,
+      220
+    ]
+  },
+  "Barbados": {
+    "coords": [
+      267,
+      256
+    ]
+  },
+  "North Korea": {
+    "coords": [
+      682,
+      166
+    ]
+  },
+  "Greenland": {
+    "coords": [
+      311,
+      60
+    ]
+  },
+  "Belgium": {
+    "coords": [
+      408,
+      130
+    ]
+  },
+  "Palau": {
+    "coords": [
+      698,
+      275
+    ]
+  },
+  "Norfolk Island": {
+    "coords": [
+      773,
+      396
+    ]
+  },
+  "South Georgia": {
+    "coords": [
+      317,
+      481
+    ]
+  },
+  "Philippines": {
+    "coords": [
+      671,
+      256
+    ]
+  },
+  "India": {
+    "coords": [
+      571,
+      233
+    ]
+  },
+  "Indonesia": {
+    "coords": [
+      666,
+      316
+    ]
+  },
+  "United States Virgin Islands": {
+    "coords": [
+      255,
+      238
+    ]
+  },
+  "Dominica": {
+    "coords": [
+      263,
+      248
+    ]
+  },
+  "Rwanda": {
+    "coords": [
+      466,
+      306
+    ]
+  },
+  "Madagascar": {
+    "coords": [
+      504,
+      366
+    ]
+  },
+  "Hong Kong": {
+    "coords": [
+      653,
+      225
+    ]
+  },
+  "Samoa": {
+    "coords": [
+      17,
+      345
+    ]
+  },
+  "Faroe Islands": {
+    "coords": [
+      384,
+      93
+    ]
+  },
+  "Pitcairn Islands": {
+    "coords": [
+      110,
+      383
+    ]
+  },
+  "Antigua and Barbuda": {
+    "coords": [
+      262,
+      243
+    ]
+  },
+  "\u00c5land Islands": {
+    "coords": [
+      444,
+      99
+    ]
+  },
+  "Sweden": {
+    "coords": [
+      433,
+      93
+    ]
+  },
+  "Mozambique": {
+    "coords": [
+      477,
+      360
+    ]
+  },
+  "Uzbekistan": {
+    "coords": [
+      542,
+      163
+    ]
+  },
+  "Antarctica": {
+    "coords": [
+      400,
+      600
+    ]
+  },
+  "Wallis and Futuna": {
+    "coords": [
+      8,
+      344
+    ]
+  },
+  "Ukraine": {
+    "coords": [
+      471,
+      136
+    ]
+  },
+  "Belize": {
+    "coords": [
+      202,
+      242
+    ]
+  },
+  "Saint Helena, Ascension and Tristan da Cunha": {
+    "coords": [
+      387,
+      353
+    ]
+  },
+  "Guernsey": {
+    "coords": [
+      394,
+      135
+    ]
+  },
+  "Tokelau": {
+    "coords": [
+      17,
+      330
+    ]
+  }
+}

@@ -2,6 +2,7 @@ import pygame
 import sys
 from games.flag_quiz import main_loop as flag_quiz_loop
 from games.capitalCity_quiz import main_loop as capital_quiz_loop
+from games.map_click_game import map_game_loop
 
 pygame.init()
 
@@ -22,6 +23,7 @@ font = pygame.font.SysFont(None, 40)
 # Buttons
 button_flag = pygame.Rect(300, 200, 200, 60)
 button_capital = pygame.Rect(300, 300, 200, 60)
+button_map = pygame.Rect(300, 400, 200, 60)
 
 def draw_text(text, font, color, surface, x, y):
     text_obj = font.render(text, True, color)
@@ -39,6 +41,9 @@ def main_menu():
         pygame.draw.rect(screen, GRAY, button_capital)
         draw_text("Capital Quiz", font, BLACK, screen, button_capital.centerx, button_capital.centery)
 
+        pygame.draw.rect(screen, GRAY, button_map)
+        draw_text("Map Click Game", font, BLACK, screen, button_map.centerx, button_map.centery)
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -49,6 +54,8 @@ def main_menu():
                     flag_quiz_loop(screen, clock)
                 elif button_capital.collidepoint(event.pos):
                     capital_quiz_loop(screen, clock)
+                elif button_map.collidepoint(event.pos):
+                    map_game_loop(screen, clock)
 
         pygame.display.flip()
         clock.tick(60)

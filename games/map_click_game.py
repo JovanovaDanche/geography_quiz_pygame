@@ -8,7 +8,7 @@ with open("assets/country_coords.json", "r") as f:
     country_data = json.load(f)
 
 MAP_WIDTH, MAP_HEIGHT = 800, 600
-MAP_IMAGE = pygame.image.load("assets/World_png.png")
+MAP_IMAGE = pygame.image.load("assets/World_map.png")
 
 def map_game_loop(screen, clock):
     font = pygame.font.SysFont(None, 30)
@@ -16,7 +16,7 @@ def map_game_loop(screen, clock):
     random.shuffle(countries)
     index = 0
     result = ""
-    timer_duration = 60  # секунди за секоја земја
+    timer_duration = 60
     start_time = time.time()
 
     running = True
@@ -25,13 +25,11 @@ def map_game_loop(screen, clock):
         screen.blit(MAP_IMAGE, (0, 0))
         pygame.draw.rect(screen, (230, 230, 230), (0, 0, MAP_WIDTH, 40))
 
-        # Прикажи моментална земја
         target = countries[index]
         prompt = f"Click on: {target}"
         text = font.render(prompt, True, (0, 0, 0))
         screen.blit(text, (10, 10))
 
-        # Прикажи тајмер
         elapsed_time = time.time() - start_time
         time_left = max(0, int(timer_duration - elapsed_time))
         timer_text = font.render(f"Time: {time_left}s", True, (0, 0, 0))
@@ -50,7 +48,6 @@ def map_game_loop(screen, clock):
 
                 pygame.draw.circle(screen, (255, 0, 0), (true_x, true_y), 10)
 
-                # Apply error margin
                 if abs(x - true_x) < 20 and abs(y - true_y) < 20:
                     result = "✅ Correct!"
                     index += 1
@@ -61,7 +58,6 @@ def map_game_loop(screen, clock):
                 else:
                     result = f"❌ Wrong! Try again."
 
-        # Ако истече тајмер
         if elapsed_time > timer_duration:
             result = f"⏰ Time's up!"
             index += 1

@@ -11,51 +11,32 @@ from utils.api import get_country_data
 buttons = pygame.sprite.Group()
 current_flag_image = None
 
-
 class Button(pygame.sprite.Sprite):
-    def __init__(self, screen, position, text, size,
-                 colors="white on blue",
-                 hover_colors="red on green",
-                 style="button1",
-                 borderc=(255, 255, 255),
-                 command=None):
+    def __init__(self, screen, position, text, size, command=None):
         super().__init__()
         self.screen = screen
         self.text = text
         self.command = command
-        self.colors = colors
-        self.original_colors = colors
-        self.fg, self.bg = self.colors.split(" on ")
-        self.hover_colors = f"{self.bg} on {self.fg}" if hover_colors == "red on green" else hover_colors
-        self.style = style
-        self.borderc = borderc
         self.font = pygame.font.SysFont("Arial", size)
-        self.render(self.text)
-        self.x, self.y, self.w, self.h = self.text_render.get_rect()
-        self.x, self.y = position
-        self.rect = pygame.Rect(self.x, self.y, 500, self.h)
-        self.position = position
+        self.text_render = self.font.render(text, True, (0, 0, 0))
+        self.image = pygame.Surface((600, 45), pygame.SRCALPHA)
+        self.rect = self.image.get_rect(topleft=position)
+        self.default_color = (244, 244, 244)
+        self.hover_color = (74, 144, 226)
+        self.text_color = (249, 211, 66)
+        self.hover_text_color = (255, 255, 255)
+        self.corner_radius = 10
         buttons.add(self)
 
-    def render(self, text):
-        self.text_render = self.font.render(text, 1, self.fg)
-        self.image = self.text_render
-
     def update(self):
-        self.fg, self.bg = self.colors.split(" on ")
-        if self.style == "button1":
-            pygame.draw.rect(self.screen, self.bg, self.rect)
-        elif self.style == "button2":
-            pygame.draw.rect(self.screen, self.bg, (self.x - 50, self.y, 500, self.h))
-            pygame.draw.rect(self.screen, self.borderc, (self.x - 50, self.y, 500, self.h), 2)
-        self.hover()
-
-    def hover(self):
-        if self.rect.collidepoint(pygame.mouse.get_pos()):
-            self.colors = self.hover_colors
-        else:
-            self.colors = self.original_colors
-
+        mouse_over = self.rect.collidepoint(pygame.mouse.get_pos())
+        bg_color = self.hover_color if mouse_over else self.default_color
+        text_color = self.hover_text_color if mouse_over else self.text_color
+        self.image.fill((0, 0, 0, 0))
+        pygame.draw.rect(self.image, bg_color, self.image.get_rect(), border_radius=self.corner_radius)
+        text_surface = self.font.render(self.text, True, text_color)
+        text_rect = text_surface.get_rect(center=self.image.get_rect().center)
+        self.image.blit(text_surface, text_rect)
 
 def load_flag_image(url):
     try:
@@ -65,7 +46,6 @@ def load_flag_image(url):
     except Exception as e:
         print(f"Error loading flag image: {e}")
         return None
-
 
 def generate_flag_questions(level="easy"):
     all_data = get_country_data()
@@ -84,12 +64,9 @@ def generate_flag_questions(level="easy"):
 
     questions = []
     for country in sample(filtered, min(10, len(filtered))):
-        question_text = "Whose flag is this?"
+        question_text = "Which country's flag is this?"
         correct_answer = country["country"]
-        wrong_answers = sample(
-            [c["country"] for c in filtered if c["country"] != correct_answer],
-            min(3, len(filtered) - 1)
-        )
+        wrong_answers = sample([c["country"] for c in filtered if c["country"] != correct_answer], min(3, len(filtered) - 1))
         options = [correct_answer] + wrong_answers
         shuffle(options)
 
@@ -102,138 +79,187 @@ def generate_flag_questions(level="easy"):
 
     return questions
 
-
 def show_end_screen(screen, score, total):
-    screen.fill((0, 0, 0))
-    # if score >= total * 0.7:
-    #     message = "You Won!"
-    #     color = "green"
-    # else:
-    #     message = "You Lost!"
-    #     color = "red"
-
-    # Label(screen, message, 300, 200, 50, color=color).draw()
-    Label(screen, f"Final Score: {score} / {total}", 300, 280, 40, color="white").draw()
-    pygame.display.flip()
-    pygame.time.delay(3000)
-
-
-def main_loop(screen, clock):
-    global buttons, current_flag_image
     buttons.empty()
-    current_flag_image = None
-    TOTAL_TIME = 60
-    start_ticks = pygame.time.get_ticks()
 
-    flag_questions = (
-            generate_flag_questions("easy") +
-            generate_flag_questions("medium") +
-            generate_flag_questions("hard")
-    )
+    overlay = pygame.Surface(screen.get_size(), pygame.SRCALPHA)
+    overlay.fill((0, 0, 0, 180))
+    screen.blit(overlay, (0, 0))
 
-    qnum = 1
-    points = 0
-    score = Label(screen, "Score: 0", 50, 550)
-    title = Label(screen, "Flag Quiz", 50, 30, 40, color="blue")
+    font_big = pygame.font.SysFont("Arial", 60, bold=True)
+    font_small = pygame.font.SysFont("Arial", 40)
 
-    def kill_buttons():
-        for btn in buttons:
-            btn.kill()
+    if score >= total * 0.9:
+        message = "YOU WIN!"
+        color = (0, 255, 0)
+    else:
+        message = "YOU LOSE!"
+        color = (255, 0, 0)
 
-    def check_score(answered="wrong"):
-        nonlocal qnum, points
-        if answered == "right":
-            points += 1
-        if qnum < len(flag_questions):
-            qnum += 1
-            score.change_text(f"Score: {points}")
-            show_flag_question(qnum)
-        else:
-            running = False
-            show_end_screen(screen, points, len(flag_questions))
-            return False
+    msg_surface = font_big.render(message, True, color)
+    score_surface = font_small.render(f"Final Score: {score} / {total}", True, (255, 255, 255))
 
-        return True
+    msg_rect = msg_surface.get_rect(center=(screen.get_width() // 2, screen.get_height() // 2 - 80))
+    score_rect = score_surface.get_rect(center=(screen.get_width() // 2, screen.get_height() // 2 - 20))
 
-    def on_right():
-        check_score("right")
+    button_x = (screen.get_width() - 200) // 2
+    button_y = screen.get_height() // 2 + 60
 
-    def on_false():
-        check_score("wrong")
+    def on_new_game():
+        return "new_game"
 
-    def show_flag_question(qnum):
-        global current_flag_image
-        kill_buttons()
-        question = flag_questions[qnum - 1]
+    button_width = 600
+    screen_width = screen.get_width()
+    button_x = (screen_width - button_width) // 2
+    button_y = screen.get_height() // 2 + 60
 
-        if qnum <= 10:
-            level_label = "Easy"
-        elif qnum <= 20:
-            level_label = "Medium"
-        else:
-            level_label = "Hard"
-
-        flag_img = load_flag_image(question["image"])
-        if flag_img:
-            current_flag_image = pygame.transform.scale(flag_img, (300, 200))
-        else:
-            current_flag_image = None
-
-        title.change_text(f"[{level_label}] Question {qnum} of {len(flag_questions)}: {question['question']}",
-                          color="blue")
-
-        y_positions = [350, 400, 450, 500]
-        for i, option in enumerate(question["options"]):
-            Label(screen, f"{i + 1}.", 50, y_positions[i], 36, color="yellow").draw()
-            is_correct = (i == question["correct"])
-            Button(
-                screen,
-                (100, y_positions[i]),
-                option,
-                36,
-                "red on yellow",
-                hover_colors="blue on orange",
-                style="button2",
-                borderc=(255, 255, 0),
-                command=on_right if is_correct else on_false
-            )
-
-    show_flag_question(qnum)
+    new_game_btn = Button(screen, (button_x, button_y), "New Game", 36, command=on_new_game)
 
     running = True
     while running:
-        screen.fill((0, 0, 0))
-
-        if current_flag_image:
-            screen.blit(current_flag_image, (250, 100))
-        else:
-            Label(screen, "Flag image not available", 300, 150, 20, color="red").draw()
+        screen.blit(overlay, (0, 0))
+        screen.blit(msg_surface, msg_rect)
+        screen.blit(score_surface, score_rect)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                return  # Return to main menu
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                for btn in buttons:
-                    if btn.rect.collidepoint(event.pos) and btn.command:
-                        running = check_score("right" if btn.command == on_right else "wrong")
+                if new_game_btn.rect.collidepoint(event.pos):
+                    running = False
 
-        title.draw()
-        score.draw()
-
-        elapsed_time = (pygame.time.get_ticks() - start_ticks) // 1000
-        remaining_time = max(0, TOTAL_TIME - elapsed_time)
-
-        Label(screen, f"Time Left: {remaining_time}s", 500, 550, 30, color="white").draw()
-
-        buttons.update()
+        new_game_btn.update()
         buttons.draw(screen)
-
-        if remaining_time <= 0:
-            running = False
-            show_end_screen(screen, points, len(flag_questions))
-            return
         pygame.display.flip()
-        clock.tick(60)
+
+
+
+def main_loop(screen, clock):
+    global buttons, current_flag_image
+    while True:
+        buttons.empty()
+        current_flag_image = None
+        TOTAL_TIME = 60
+        start_ticks = pygame.time.get_ticks()
+
+        flag_questions = generate_flag_questions("easy") + generate_flag_questions("medium") + generate_flag_questions("hard")
+
+        qnum = 1
+        points = 0
+
+        def kill_buttons():
+            for btn in buttons:
+                btn.kill()
+
+        def check_score(answered="wrong"):
+            nonlocal qnum, points, running
+            if answered == "right":
+                points += 1
+            if qnum < len(flag_questions):
+                qnum += 1
+                show_flag_question(qnum)
+                return True
+            else:
+                result = show_end_screen(screen, points, len(flag_questions))
+                if result == "new_game":
+                    return "new_game"
+                return "menu"
+
+        def on_right():
+            return check_score("right")
+
+        def on_false():
+            return check_score("wrong")
+
+        def show_flag_question(qnum):
+            global current_flag_image
+            kill_buttons()
+            question = flag_questions[qnum - 1]
+
+            if qnum <= 10:
+                level_label = "Easy"
+            elif qnum <= 20:
+                level_label = "Medium"
+            else:
+                level_label = "Hard"
+
+            flag_img = load_flag_image(question["image"])
+            if flag_img:
+                current_flag_image = pygame.transform.scale(flag_img, (300, 200))
+            else:
+                current_flag_image = None
+
+            subtitle.change_text(question["question"])
+            level_title.change_text(f"Level {level_label} : Question {qnum} of {len(flag_questions)}")
+
+            y_base = 380
+            for i, option in enumerate(question["options"]):
+                Button(screen, (100, y_base + i * 55), option, 28,
+                       command=on_right if i == question["correct"] else on_false)
+
+        timer = Label(screen, "Time: 60s", 50, 20, 28, color=(74, 144, 226))
+        score = Label(screen, "Score: 0", 650, 20, 28, color=(74, 144, 226))
+        level_title = Label(screen, "", 400, 80, 30, color="dodgerblue", center=True)
+        subtitle = Label(screen, "Which country's flag is this?", 400, 120, 35, color=(204, 196, 144), center=True)
+
+        show_flag_question(qnum)
+
+        retry_btn = Button(screen, (660, 10), "Retry", 24, command=lambda: "retry")
+        exit_btn = Button(screen, (660, 60), "Exit", 24, command=lambda: "menu")
+
+        retry_btn.image = pygame.Surface((120, 40), pygame.SRCALPHA)
+        retry_btn.rect = retry_btn.image.get_rect(topleft=(660, 70))
+        exit_btn.image = pygame.Surface((120, 40), pygame.SRCALPHA)
+        exit_btn.rect = exit_btn.image.get_rect(topleft=(660, 120))
+
+        running = True
+        while running:
+            screen.fill((255, 245, 180))
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                    return "menu"
+                if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                    if retry_btn.rect.collidepoint(event.pos):
+                        running = False
+                    elif exit_btn.rect.collidepoint(event.pos):
+                        return "menu"
+                    for btn in buttons:
+                        if btn.rect.collidepoint(event.pos) and btn.command:
+                            result = btn.command()
+                            if result == "retry":
+                                return main_loop(screen, clock)
+                            elif result == "menu" or result == "new_game":
+                                return "menu"
+
+            elapsed_time = (pygame.time.get_ticks() - start_ticks) // 1000
+            remaining_time = max(0, TOTAL_TIME - elapsed_time)
+            timer.change_text(f"Time: {remaining_time}s")
+            score.change_text(f"Score: {points}")
+
+            timer.draw()
+            score.draw()
+            level_title.draw()
+            subtitle.draw()
+
+            if current_flag_image:
+                screen.blit(current_flag_image, (250, 160))
+
+            buttons.update()
+            buttons.draw(screen)
+
+            screen.blit(retry_btn.image, retry_btn.rect)
+            screen.blit(exit_btn.image, exit_btn.rect)
+
+            pygame.display.flip()
+            clock.tick(60)
+
+            if remaining_time <= 0:
+                outcome = show_end_screen(screen, points, len(flag_questions))
+                if outcome == "new_game":
+                    return "menu"
+                return

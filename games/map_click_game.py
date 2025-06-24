@@ -1,70 +1,155 @@
 import pygame
-import json
 import random
-import time
+from shapely.geometry import Point
+from svg_parser import load_country_polygons
 
-# Load country coordinates
-with open("assets/country_coords.json", "r") as f:
-    country_data = json.load(f)
+MAP_PATH = "assets/europe_map.png"
+SVG_PATH = "svg/Blank_map_of_Europe_(with_disputed_regions).svg"
 
-MAP_WIDTH, MAP_HEIGHT = 800, 600
-MAP_IMAGE = pygame.image.load("assets/World_map.png")
+id_to_name = {
+    "be": "Belgium", "hr": "Croatia", "es": "Spain", "al": "Albania", "at": "Austria",
+    "by": "Belarus", "bg": "Bulgaria", "ch": "Switzerland", "cy": "Cyprus", "dz": "Algeria",
+    "ge": "Georgia", "gi": "Gibraltar", "hu": "Hungary", "il": "Israel", "iq": "Iraq",
+    "ir": "Iran", "lb": "Lebanon", "li": "Liechtenstein", "lu": "Luxembourg", "ma": "Morocco",
+    "mc": "Monaco", "me": "Montenegro", "mk": "North Macedonia", "pt": "Portugal", "sk": "Slovakia",
+    "sm": "San Marino", "sy": "Syria", "tr-europe": "Turkey", "va": "Vatican City",
+    "south_ossetia": "Georgia", "golan_heights": "Syria", "se": "Sweden", "am": "Armenia",
+    "ba": "Bosnia and Herzegovina", "ee": "Estonia", "xk": "Kosovo", "ua": "Ukraine",
+    "tn": "Tunisia", "ro": "Romania", "mt": "Malta", "nl": "Netherlands", "no": "Norway", "gl": "Greenland"
+}
+
 
 def map_game_loop(screen, clock):
-    font = pygame.font.SysFont(None, 30)
-    countries = list(country_data.keys())
-    random.shuffle(countries)
-    index = 0
-    result = ""
-    timer_duration = 60
-    start_time = time.time()
+    game_duration = 5 * 60 * 1000  # 5 minutes
+    start_time = pygame.time.get_ticks()
+
+    map_img = pygame.image.load(MAP_PATH)
+    font = pygame.font.SysFont("Segoe UI", 36)
+    timer_font = pygame.font.SysFont("Segoe UI", 23)
+
+    polygons_by_id = load_country_polygons(SVG_PATH)
+
+    countries = {}
+    for cid, poly in polygons_by_id.items():
+        if cid in id_to_name:
+            countries[id_to_name[cid]] = poly
+
+    if not countries:
+        error_msg = "No valid countries found in SVG!"
+        print(error_msg)
+        error_text = font.render(error_msg, True, (255, 0, 0))
+        screen.blit(error_text, (50, 50))
+        pygame.display.flip()
+        pygame.time.wait(3000)
+        return
+
+    score = 0
+    remaining_countries = list(countries.keys())
+    random.shuffle(remaining_countries)
+    current_country = remaining_countries.pop()
+    feedback = ""
+    feedback_time = 0
 
     running = True
+    game_over = False
+    game_over_time = 0
+
+    hint_button = pygame.Rect(screen.get_width() - 100, 60, 80, 25)
+    hint_active = False
+    hint_start_time = 0
+
+    exit_button = pygame.Rect(screen.get_width() - 100, 100, 80, 25)
+
     while running:
-        screen.fill((255, 255, 255))
-        screen.blit(MAP_IMAGE, (0, 0))
-        pygame.draw.rect(screen, (230, 230, 230), (0, 0, MAP_WIDTH, 40))
+        screen.fill((0, 0, 0))
+        screen.blit(map_img, (0, 0))
 
-        target = countries[index]
-        prompt = f"Click on: {target}"
-        text = font.render(prompt, True, (0, 0, 0))
-        screen.blit(text, (10, 10))
+        elapsed = pygame.time.get_ticks() - start_time
+        remaining_time = max(0, game_duration - elapsed)
 
-        elapsed_time = time.time() - start_time
-        time_left = max(0, int(timer_duration - elapsed_time))
-        timer_text = font.render(f"Time: {time_left}s", True, (0, 0, 0))
-        screen.blit(timer_text, (650, 10))
+        prompt = font.render(f"Click on: {current_country}", True, (255, 255, 255))
+        screen.blit(prompt, (20, 530))
 
-        if result:
-            result_text = font.render(result, True, (0, 128, 0) if "Correct" in result else (200, 0, 0))
-            screen.blit(result_text, (10, 50))
+        score_text = font.render(f"Score: {score}", True, (255, 255, 255))
+        screen.blit(score_text, (630, 530))
+
+        minutes = remaining_time // 60000
+        seconds = (remaining_time % 60000) // 1000
+        timer_text = timer_font.render(f"Time: {minutes:02}:{seconds:02}", True, (255, 255, 255))
+        screen.blit(timer_text, (screen.get_width() - 120, 20))
+
+        pygame.draw.rect(screen, (200, 0, 0), hint_button, border_radius=5)
+        hint_text = timer_font.render("Hint", True, (255, 255, 255))
+        text_rect = hint_text.get_rect(center=hint_button.center)
+        screen.blit(hint_text, text_rect)
+
+        pygame.draw.rect(screen, (120, 0, 0), exit_button, border_radius=5)
+        exit_text = timer_font.render("Exit", True, (255, 255, 255))
+        exit_text_rect = exit_text.get_rect(center=exit_button.center)
+        screen.blit(exit_text, exit_text_rect)
+        # Handle game over
+        if remaining_time <= 0 and not game_over:
+            feedback = "Time's up!"
+            feedback_time = pygame.time.get_ticks()
+            game_over = True
+            game_over_time = pygame.time.get_ticks()
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                x, y = event.pos
-                true_x, true_y = country_data[target]["coords"]
 
-                pygame.draw.circle(screen, (255, 0, 0), (true_x, true_y), 10)
+            elif event.type == pygame.MOUSEBUTTONDOWN and not game_over:
+                mouse_pos = event.pos
+                point = Point(mouse_pos)
 
-                if abs(x - true_x) < 20 and abs(y - true_y) < 20:
-                    result = "✅ Correct!"
-                    index += 1
-                    if index >= len(countries):
-                        index = 0
-                        random.shuffle(countries)
-                    start_time = time.time()
-                else:
-                    result = f"❌ Wrong! Try again."
+                if hint_button.collidepoint(mouse_pos) and not hint_active:
+                    hint_active = True
+                    hint_start_time = pygame.time.get_ticks()
 
-        if elapsed_time > timer_duration:
-            result = f"⏰ Time's up!"
-            index += 1
-            if index >= len(countries):
-                index = 0
-                random.shuffle(countries)
-            start_time = time.time()
+                if exit_button.collidepoint(mouse_pos):
+                    running = False
+                    break
+
+                clicked = None
+                for name, poly in countries.items():
+                    if name in ["Monaco", "Vatican City", "Liechtenstein", "San Marino", "Gibraltar", "Syria"]:
+                        if poly.buffer(5).contains(point):
+                            clicked = name
+                            break
+                    elif poly.contains(point):
+                        clicked = name
+                        break
+
+                if clicked:
+                    if clicked == current_country:
+                        score += 1
+                        feedback = "Correct! +1"
+                        feedback_time = pygame.time.get_ticks()
+
+                        if remaining_countries:
+                            current_country = remaining_countries.pop()
+                        else:
+                            feedback = "Game over! You guessed all countries!"
+                            feedback_time = pygame.time.get_ticks()
+                            game_over = True
+                            game_over_time = pygame.time.get_ticks()
+                    else:
+                        feedback = "Wrong!"
+                        feedback_time = pygame.time.get_ticks()
+
+        if pygame.time.get_ticks() - feedback_time < 1000:
+            color = (0, 255, 0) if "Correct" in feedback or "guessed all" in feedback else (255, 0, 0)
+            fb_text = font.render(feedback, True, color)
+            screen.blit(fb_text, (300, 200))
+
+        if hint_active:
+            center = countries[current_country].centroid
+            pygame.draw.circle(screen, (255, 255, 0), (int(center.x), int(center.y)), 60, 4)
+            if pygame.time.get_ticks() - hint_start_time > 3000:
+                hint_active = False
+
+        if game_over and pygame.time.get_ticks() - game_over_time > 2000:
+            running = False
 
         pygame.display.flip()
-        clock.tick(30)
+        clock.tick(60)

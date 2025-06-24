@@ -46,7 +46,8 @@ class Button:
 def capital_quiz_menu():
     buttons = [
         Button((300, 250, 200, 60), "Guess Capital", lambda: main_loop_capital(screen, clock)),
-        Button((300, 350, 200, 60), "Guess Country", lambda: main_loop_country(screen, clock))
+        Button((300, 350, 200, 60), "Guess Country", lambda: main_loop_country(screen, clock)),
+        Button((300, 450, 200, 60), "Back", main_menu)
     ]
 
     while True:

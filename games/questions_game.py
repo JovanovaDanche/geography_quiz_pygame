@@ -11,13 +11,13 @@ from pygame.sprite import Group
 buttons = Group()
 
 class Button(pygame.sprite.Sprite):
-    def __init__(self, screen, position, text, size, command=None):
+    def __init__(self, screen, position, text, size, command=None, width=600, height=45):
         super().__init__()
         self.screen = screen
         self.text = text
         self.command = command
         self.font = pygame.font.SysFont("Arial", size)
-        self.image = pygame.Surface((600, 45), pygame.SRCALPHA)
+        self.image = pygame.Surface((width, height), pygame.SRCALPHA)
         self.rect = self.image.get_rect(topleft=position)
         self.default_color = (244, 244, 244)
         self.hover_color = (74, 144, 226)
@@ -143,6 +143,8 @@ def opentdb_loop(screen, clock):
             subtitle.change_text(q['question'])
             for i, opt in enumerate(q['options']):
                 Button(screen, (100, 260 + i * 60), opt, 28, command=lambda is_right=(i == q['correct']): handle_answer(is_right))
+                Button(screen, (screen.get_width() - 150, 70), "Exit", 24, command=lambda: "menu", width=100, height=40)
+
         else:
             return show_end_screen(screen, points, len(questions))
 

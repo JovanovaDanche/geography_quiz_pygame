@@ -108,7 +108,7 @@ def show_end_screen(screen, score, total):
     msg_rect = msg_surface.get_rect(center=(screen.get_width() // 2, screen.get_height() // 2 - 80))
     score_rect = score_surface.get_rect(center=(screen.get_width() // 2, screen.get_height() // 2 - 20))
 
-    button_x = (screen.get_width() - 200) // 2
+    button_x = (screen.get_width() - 600) // 2
     button_y = screen.get_height() // 2 + 60
 
     def on_new_game():

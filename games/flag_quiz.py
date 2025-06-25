@@ -18,7 +18,6 @@ class Button(pygame.sprite.Sprite):
         self.text = text
         self.command = command
         self.font = pygame.font.SysFont("Arial", size)
-        self.text_render = self.font.render(text, True, (0, 0, 0))
         self.image = pygame.Surface((600, 45), pygame.SRCALPHA)
         self.rect = self.image.get_rect(topleft=position)
         self.default_color = (244, 244, 244)
@@ -37,6 +36,14 @@ class Button(pygame.sprite.Sprite):
         text_surface = self.font.render(self.text, True, text_color)
         text_rect = text_surface.get_rect(center=self.image.get_rect().center)
         self.image.blit(text_surface, text_rect)
+
+def show_loading_screen(screen):
+    screen.fill((255, 245, 180))
+    font = pygame.font.SysFont("Arial", 48, bold=True)
+    text_surface = font.render("Loading new game...", True, (74, 144, 226))
+    text_rect = text_surface.get_rect(center=(screen.get_width() // 2, screen.get_height() // 2))
+    screen.blit(text_surface, text_rect)
+    pygame.display.flip()
 
 def load_flag_image(url):
     try:
@@ -81,7 +88,6 @@ def generate_flag_questions(level="easy"):
 
 def show_end_screen(screen, score, total):
     buttons.empty()
-
     overlay = pygame.Surface(screen.get_size(), pygame.SRCALPHA)
     overlay.fill((0, 0, 0, 180))
     screen.blit(overlay, (0, 0))
@@ -108,11 +114,6 @@ def show_end_screen(screen, score, total):
     def on_new_game():
         return "new_game"
 
-    button_width = 600
-    screen_width = screen.get_width()
-    button_x = (screen_width - button_width) // 2
-    button_y = screen.get_height() // 2 + 60
-
     new_game_btn = Button(screen, (button_x, button_y), "New Game", 36, command=on_new_game)
 
     running = True
@@ -133,17 +134,18 @@ def show_end_screen(screen, score, total):
         buttons.draw(screen)
         pygame.display.flip()
 
-
-
 def main_loop(screen, clock):
     global buttons, current_flag_image
     while True:
         buttons.empty()
         current_flag_image = None
         TOTAL_TIME = 60
-        start_ticks = pygame.time.get_ticks()
 
-        flag_questions = generate_flag_questions("easy") + generate_flag_questions("medium") + generate_flag_questions("hard")
+        flag_questions = (
+            generate_flag_questions("easy") +
+            generate_flag_questions("medium") +
+            generate_flag_questions("hard")
+        )
 
         qnum = 1
         points = 0
@@ -204,6 +206,7 @@ def main_loop(screen, clock):
         subtitle = Label(screen, "Which country's flag is this?", 400, 120, 35, color=(204, 196, 144), center=True)
 
         show_flag_question(qnum)
+        start_ticks = pygame.time.get_ticks()
 
         retry_btn = Button(screen, (660, 10), "Retry", 24, command=lambda: "retry")
         exit_btn = Button(screen, (660, 60), "Exit", 24, command=lambda: "menu")
@@ -225,13 +228,15 @@ def main_loop(screen, clock):
                     return "menu"
                 if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                     if retry_btn.rect.collidepoint(event.pos):
-                        running = False
+                        show_loading_screen(screen)
+                        return main_loop(screen, clock)
                     elif exit_btn.rect.collidepoint(event.pos):
                         return "menu"
                     for btn in buttons:
                         if btn.rect.collidepoint(event.pos) and btn.command:
                             result = btn.command()
                             if result == "retry":
+                                show_loading_screen(screen)
                                 return main_loop(screen, clock)
                             elif result == "menu" or result == "new_game":
                                 return "menu"

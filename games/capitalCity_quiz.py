@@ -33,7 +33,6 @@ class Button(pygame.sprite.Sprite):
         text_rect = text_surface.get_rect(center=self.image.get_rect().center)
         self.image.blit(text_surface, text_rect)
 
-
 def generate_questions(mode="capital", level="easy"):
     all_data = get_country_data()
     valid_data = [c for c in all_data if c.get("capital") and c["capital"] != "N/A"]
@@ -71,8 +70,13 @@ def generate_questions(mode="capital", level="easy"):
         })
 
     return questions
-
-
+def show_loading_screen(screen):
+    screen.fill((255, 245, 180))
+    font = pygame.font.SysFont("Arial", 48, bold=True)
+    text_surface = font.render("Loading new game...", True, (74, 144, 226))
+    text_rect = text_surface.get_rect(center=(screen.get_width() // 2, screen.get_height() // 2))
+    screen.blit(text_surface, text_rect)
+    pygame.display.flip()
 def main_loop(screen, clock, mode="capital"):
     buttons.empty()
     TOTAL_TIME = 60
@@ -84,6 +88,7 @@ def main_loop(screen, clock, mode="capital"):
 
     qnum = 1
     points = 0
+    question_answered = False
     score_label = Label(screen, "Score: 0", 50, 550, 30, color=(74, 144, 226))
 
     def kill_buttons():
@@ -91,19 +96,18 @@ def main_loop(screen, clock, mode="capital"):
             btn.kill()
 
     def check_score(answered="wrong"):
-        nonlocal qnum, points, running
+        nonlocal qnum, points, question_answered
+        question_answered = True
         if answered == "right":
             points += 1
         if qnum < len(questions):
             qnum += 1
             score_label.change_text(f"Score: {points}")
             show_question(qnum)
-            return True
+            question_answered = False
+            return None
         else:
-            running = False
-            result = show_end_screen(screen, points, len(questions))
-            return result
-
+            return show_end_screen(screen, points, len(questions))
 
     def on_right():
         return check_score("right")
@@ -141,7 +145,6 @@ def main_loop(screen, clock, mode="capital"):
 
     retry_btn.image = pygame.Surface((120, 40), pygame.SRCALPHA)
     retry_btn.rect = retry_btn.image.get_rect(topleft=(660, 10))
-
     exit_btn.image = pygame.Surface((120, 40), pygame.SRCALPHA)
     exit_btn.rect = exit_btn.image.get_rect(topleft=(660, 60))
 
@@ -156,15 +159,23 @@ def main_loop(screen, clock, mode="capital"):
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 return
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                for btn in buttons:
-                    if btn.rect.collidepoint(event.pos) and btn.command:
-                        result = btn.command()
-                        if result == "retry":
-                            main_loop(screen, clock, mode)
-                        elif result == "menu":
-                            return "menu"
-                        elif result == "new_game":
-                            return "menu"
+                if retry_btn.rect.collidepoint(event.pos):
+                    show_loading_screen(screen)
+                    return main_loop(screen, clock, mode)
+                elif exit_btn.rect.collidepoint(event.pos):
+                    return "menu"
+                else:
+                    for btn in buttons:
+                        if btn.rect.collidepoint(event.pos) and btn.command:
+                            if not question_answered:
+                                result = btn.command()
+                                if result == "retry":
+                                    show_loading_screen(screen)
+                                    return main_loop(screen, clock, mode)
+                                elif result == "menu":
+                                    return "menu"
+                                elif result == "new_game":
+                                    return main_loop(screen, clock, mode)
 
         elapsed_time = (pygame.time.get_ticks() - start_ticks) // 1000
         remaining_time = max(0, TOTAL_TIME - elapsed_time)
@@ -185,12 +196,11 @@ def main_loop(screen, clock, mode="capital"):
         if remaining_time <= 0:
             result = show_end_screen(screen, points, len(questions))
             if result == "new_game":
-                return "menu"
+                return main_loop(screen, clock, mode)
             return
 
         pygame.display.flip()
         clock.tick(60)
-
 
 def show_end_screen(screen, score, total):
     buttons.empty()
@@ -218,8 +228,7 @@ def show_end_screen(screen, score, total):
 
     new_game_btn = Button(screen, (button_x, button_y), "New Game", 36, command=on_new_game)
 
-    running = True
-    while running:
+    while True:
         screen.blit(overlay, (0, 0))
         screen.blit(msg_surface, msg_rect)
         screen.blit(score_surface, score_rect)
@@ -230,7 +239,7 @@ def show_end_screen(screen, score, total):
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 if new_game_btn.rect.collidepoint(event.pos):
-                    running = False
+                    return "new_game"
 
         new_game_btn.update()
         buttons.draw(screen)
@@ -241,5 +250,3 @@ def main_loop_capital(screen, clock):
 
 def main_loop_country(screen, clock):
     return main_loop(screen, clock, mode="country")
-
-

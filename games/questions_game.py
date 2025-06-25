@@ -57,7 +57,7 @@ def show_end_screen(screen, score, total):
     def on_new_game():
         return "retry"
 
-    new_game_btn = Button(screen, ((screen.get_width() - 300) // 2, screen.get_height() // 2 + 60), "New Game", 36, command=on_new_game)
+    new_game_btn = Button(screen, ((screen.get_width() - 600) // 2, screen.get_height() // 2 + 60), "New Game", 36, command=on_new_game)
 
     running = True
     while running:

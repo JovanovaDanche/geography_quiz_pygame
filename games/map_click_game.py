@@ -78,16 +78,26 @@ def map_game_loop(screen, clock):
         timer_text = timer_font.render(f"Time: {minutes:02}:{seconds:02}", True, (255, 255, 255))
         screen.blit(timer_text, (screen.get_width() - 120, 20))
 
-        pygame.draw.rect(screen, (200, 0, 0), hint_button, border_radius=5)
-        hint_text = timer_font.render("Hint", True, (255, 255, 255))
+        mouse_pos = pygame.mouse.get_pos()
+
+        if hint_button.collidepoint(mouse_pos):
+            pygame.draw.rect(screen, (74, 144, 226), hint_button, border_radius=12)
+            hint_text = timer_font.render("Hint", True, (255, 255, 255))
+        else:
+            pygame.draw.rect(screen, (255, 255, 255), hint_button, border_radius=12)
+            hint_text = timer_font.render("Hint", True, (249, 211, 66))
         text_rect = hint_text.get_rect(center=hint_button.center)
         screen.blit(hint_text, text_rect)
 
-        pygame.draw.rect(screen, (120, 0, 0), exit_button, border_radius=5)
-        exit_text = timer_font.render("Exit", True, (255, 255, 255))
+        if exit_button.collidepoint(mouse_pos):
+            pygame.draw.rect(screen, (74, 144, 226), exit_button, border_radius=12)
+            exit_text = timer_font.render("Exit", True, (255, 255, 255))
+        else:
+            pygame.draw.rect(screen, (255, 255, 255), exit_button, border_radius=12)
+            exit_text = timer_font.render("Exit", True, (249, 211, 66))
         exit_text_rect = exit_text.get_rect(center=exit_button.center)
         screen.blit(exit_text, exit_text_rect)
-        # Handle game over
+
         if remaining_time <= 0 and not game_over:
             feedback = "Time's up!"
             feedback_time = pygame.time.get_ticks()

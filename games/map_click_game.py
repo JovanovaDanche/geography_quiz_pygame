@@ -159,7 +159,22 @@ def map_game_loop(screen, clock):
                 hint_active = False
 
         if game_over and pygame.time.get_ticks() - game_over_time > 2000:
+            screen.fill((0, 0, 0))
+
+            total_countries = len(countries)
+            if score >= total_countries / 2:
+                result_text = font.render("You win!", True, (0, 255, 0))
+            else:
+                result_text = font.render("You lose!", True, (255, 0, 0))
+
+            result_rect = result_text.get_rect(center=(screen.get_width() // 2, screen.get_height() // 2))
+            screen.blit(result_text, result_rect)
+
+            pygame.display.flip()
+            pygame.time.wait(3000)
             running = False
+
 
         pygame.display.flip()
         clock.tick(60)
+    return "menu"
